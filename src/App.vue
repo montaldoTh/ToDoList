@@ -2,12 +2,7 @@
   <div class="todoContainer">
     <h1>To do list</h1>
     <div class="todoAction">
-      <form action="" @submit.prevent="addTask">
-        <input type="text" placeholder="Ajoute une tache" v-model="newTask">
-        <button>Ajouter</button>
-      </form>
-      <span style="margin-left: 10px; margin-top: 3px;">Masquer les taches terminées</span>
-      <input type="checkbox" v-model="hidder">
+      <button @click="toggleFormModal">Ajouter une tache</button>
     </div>
     <p v-if="tasks.length === 0">Aucunes taches à faire ! Ajoute en</p>
     <table v-if="tasks.length >= 1">
@@ -26,17 +21,42 @@
         </tr>
       </tbody>
     </table>
+    <Modal :isOpen="isFormModalOpen" @close="isFormModalOpen = false">
+      <template #header>
+        <h2>Ajout d'une tâche</h2>
+      </template>
+
+      <template #body>
+        <form @submit.prevent="submitForm">
+          <input type="text" placeholder="Titre de la tâche" v-model="newTask.title">
+          <input type="text" placeholder="Description de la tâche" v-model="newTask.description">
+          <input type="number" placeholder="Durée en heure" v-model="newTask.duree">
+          <VueDatePicker locale="fr" cancelText="annuler" selectText="confimer" placeholder="Date de début" v-model="newTask.startingDate"/>
+        </form>
+      </template>
+
+      <template #footer>
+        <button @click="addTask">Confirmer</button>
+        <button @click="toggleFormModal">Annuler</button>
+      </template>
+    </Modal>
   </div>
 </template>
 
 <script setup>
   import {ref, computed} from "vue"
-
-  const today = new Date()
-  const formattedDate = today.toLocaleDateString('fr-FR')
+  import Modal from "./composant/Modal.vue";
+  import VueDatePicker from '@vuepic/vue-datepicker';
+  import '@vuepic/vue-datepicker/dist/main.css'
 
   const tasks = ref([])
-  const newTask = ref("")
+  const newTask = ref({
+    startingDate: new Date(), 
+    title: "",
+    description: "",
+    duree: ""
+  })
+
   const hidder = ref(false)
 
   const sortTask= () => {
@@ -44,18 +64,38 @@
   }
 
   const addTask = () =>{
+    const format = (date = newTask.value.startingDate) => {
+      const day = date.getDate()
+      const month = date.getMonth() + 1
+      const year = date.getFullYear()
+
+      return `${day}/${month}/${year}`
+    }
     tasks.value.push({
-      title: newTask.value,
+      title: newTask.value.title,
+      description: newTask.value.description,
       completed: false,
-      date: formattedDate
+      date: format(),
+      duree: newTask.value.duree
     })
-    newTask.value = ''
+    newTask.value = {
+      startingDate: new Date(), 
+      title: "",
+      description: "",
+      duree: ""
+    }
     sortTask()
   }
 
   const filteredTasks = computed(() => {
     return tasks.value.filter(task => !(hidder.value && task.completed))
   })
+
+  const isFormModalOpen = ref(false)
+  const toggleFormModal =()=>{
+    isFormModalOpen.value = !isFormModalOpen.value
+  }
+
 </script>
 
 <style>

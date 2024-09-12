@@ -15,7 +15,7 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits, ref } from 'vue'
+import { ref, watch } from 'vue'
 
 const props = defineProps({
     isOpen: Boolean,
