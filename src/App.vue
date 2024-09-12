@@ -23,21 +23,31 @@
     </table>
     <Modal :isOpen="isFormModalOpen" @close="isFormModalOpen = false">
       <template #header>
-        <h2>Ajout d'une tâche</h2>
+        <div class="formHeader">
+          <h2>Ajout d'une tâche</h2>
+        </div>
       </template>
 
       <template #body>
-        <form @submit.prevent="submitForm">
-          <input type="text" placeholder="Titre de la tâche" v-model="newTask.title">
-          <input type="text" placeholder="Description de la tâche" v-model="newTask.description">
-          <input type="number" placeholder="Durée en heure" v-model="newTask.duree">
+        <form @submit.prevent="submitForm" class="formBody">
+          <div class="container">
+            <div class="col">
+              <input type="text" placeholder="Titre de la tâche" v-model="newTask.title">
+            </div>
+            <div class="col">
+              <input type="number" placeholder="Durée en heure" v-model="newTask.duree">
+            </div>
+          </div>
+          <textarea placeholder="Description de la tâche" v-model="newTask.description" />
           <VueDatePicker locale="fr" cancelText="annuler" selectText="confimer" placeholder="Date de début" v-model="newTask.startingDate"/>
         </form>
       </template>
 
       <template #footer>
-        <button @click="addTask">Confirmer</button>
-        <button @click="toggleFormModal">Annuler</button>
+        <div class="formFooter">
+          <button @click="addTask">Confirmer</button>
+          <button @click="toggleFormModal">Annuler</button>
+        </div>
       </template>
     </Modal>
   </div>
@@ -98,7 +108,7 @@
 
 </script>
 
-<style>
+<style lang="scss">
   .todoContainer{
     display: flex;
     flex-direction: column;
@@ -127,5 +137,41 @@
 
   table{
     width: 384px;
+  }
+
+  .formBody{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    .container{
+      display: flex;
+      flex-direction: row;
+      margin-bottom: 3%;
+      .col{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 50%;
+        input{
+          width: 90%;
+        }
+      }
+    }
+    textarea{
+      width: 95%;
+      margin-bottom: 3%;
+    }
+    .dp__main, .dp__theme_light{
+      width: 98%;
+    }
+  }
+  
+  .formFooter{
+    margin-top: 10%;
+    display: flex;
+    justify-content: center;
+    button{
+      margin: 0 1vh;
+    }
   }
 </style>

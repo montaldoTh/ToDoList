@@ -53,5 +53,7 @@ watch(() => props.isOpen, (newVal) => {
   background: white;
   padding: 1.5rem;
   border-radius: 8px;
+  max-width: 290px;
+  max-height: 284px;
 }
 </style>
